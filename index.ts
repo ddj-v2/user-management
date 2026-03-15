@@ -1,7 +1,9 @@
 import {
     Context, Handler, param, PRIV, Types, UserModel, DomainModel,
-    ValidationError, UserNotFoundError, PermissionError, Time, SystemModel, moment
+    ValidationError, UserNotFoundError, PermissionError, Time, SystemModel, moment,
+    PERM
 } from 'hydrooj';
+import domain from 'hydrooj/src/model/domain';
 
 declare module 'hydrooj' {
     interface Collections {
@@ -210,6 +212,77 @@ export async function apply(ctx: Context) {
     // 在控制面板侧边栏添加用户管理菜单项
     ctx.injectUI('ControlPanel', 'user_manage_main', { icon: 'user' });
     
+    ctx.withHandlerClass('DomainUser', (DomainUserHandler: { prototype: any }) => {
+        const originalGet = DomainUserHandler.prototype.get;
+
+        // 包裝原方法
+        DomainUserHandler.prototype.get = async function() {
+            const { domainId } = this.args;
+            const format = this.args.format || 'default';
+            console.log('DomainUserHandler get called with domainId:', domainId, 'format:', format);
+            const [dudocs, roles] = await Promise.all([
+            domain.collUser.aggregate([
+                {
+                    $match: {
+                        // TODO: add a page to display users who joined but with default role
+                        role: {
+                            $nin: ['guest'],
+                            $ne: null,
+                        },
+                        domainId,
+                    },
+                },
+                {
+                    $lookup: {
+                        from: 'user',
+                        let: { uid: '$uid' },
+                        pipeline: [
+                            {
+                                $match: {
+                                    $expr: { $eq: ['$_id', '$$uid'] },
+                                    priv: { $bitsAllSet: PRIV.PRIV_USER_PROFILE },
+                                },
+                            },
+                            {
+                                $project: {
+                                    _id: 1,
+                                    uname: 1,
+                                    avatar: 1,
+                                },
+                            },
+                        ],
+                        as: 'user',
+                    },
+                },
+                { $unwind: '$user' },
+                {
+                    $project: {
+                        user: 1,
+                        role: 1,
+                        join: 1,
+                        ...(this.user.hasPerm(PERM.PERM_VIEW_USER_PRIVATE_INFO) ? { displayName: 1 } : {}),
+                    },
+                },
+            ]).toArray(),
+            domain.getRoles(domainId),
+        ]);
+        const users = dudocs.map((dudoc) => {
+            const u = {
+                ...dudoc,
+                ...dudoc.user,
+            };
+            delete u.user;
+            return u;
+        });
+        const rudocs: Record<string, any[]> = {};
+        for (const role of roles) rudocs[role._id] = users.filter((udoc) => udoc.role === role._id);
+        this.response.template = format === 'raw' ? 'domain_user_raw.html' : 'domain_user.html';
+        this.response.body = {
+            roles, rudocs, domain: this.domain,
+        };
+        };
+        return DomainUserHandler;
+    });
     // 添加国际化支持
     ctx.i18n.load('zh', {
         'user_manage_main': '用户管理',

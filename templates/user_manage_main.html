@@ -134,14 +134,43 @@
 </div>
 
 <style>
-.col--uid { width: 80px; }
-.col--user { width: 150px; }
-.col--email { width: 200px; }
-.col--regat { width: 120px; }
-.col--loginat { width: 120px; }
-.col--priv { width: 100px; }
-.col--status { width: 80px; }
-.col--actions { width: 100px; }
+.section__body.no-padding {
+  max-width: 100%;
+  overflow-x: hidden;
+}
+
+.data-table {
+  width: 100%;
+  table-layout: fixed;
+}
+
+.data-table th,
+.data-table td {
+  word-break: break-word;
+  overflow-wrap: anywhere;
+  white-space: normal;
+}
+
+.data-table td {
+  max-width: 0;
+}
+
+.data-table td a,
+.data-table td span,
+.data-table td small {
+  word-break: break-word;
+  overflow-wrap: anywhere;
+  white-space: normal;
+}
+
+.col--uid { width: 8%; }
+.col--user { width: 17%; }
+.col--email { width: 19%; }
+.col--regat { width: 13%; }
+.col--loginat { width: 13%; }
+.col--priv { width: 10%; }
+.col--status { width: 8%; }
+.col--actions { width: 12%; }
 
 .badge {
   display: inline-block;
@@ -170,6 +199,27 @@
 .button--small {
   padding: 4px 8px;
   font-size: 12px;
+}
+
+.col--actions .button--small {
+  display: block;
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
+  padding: 4px 4px;
+  line-height: 1.2;
+  white-space: normal !important;
+  overflow-wrap: anywhere;
+  word-break: break-word;
+  text-align: center;
+}
+
+@media (max-width: 768px) {
+  .button--small {
+    padding: 3px 6px;
+    font-size: 11px;
+  }
 }
 </style>
 
