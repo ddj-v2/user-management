@@ -1,12 +1,12 @@
 {
-  "name": "@hydrooj/user-management",
-  "version": "1.0.0",
+  "name": "@ddj-v2/user-management",
+  "version": "2.0.0",
   "description": "Advanced user management plugin for Hydro",
   "main": "index.ts",
-  "author": "Orange",
+  "author": "Grass_cat",
   "license": "MIT",
   "dependencies": {
-    "hydrooj": "^5.0.0-beta.6"
+    "hydrooj": "*"
   },
   "peerDependencies": {
     "hydrooj": "*"
@@ -14,5 +14,12 @@
   "hydro": {
     "addon": true
   },
-  "repository": "https://github.com/SummerofOrange/hydrooj-user-management"
+  "repository": "https://github.com/ddj-v2/user-management",
+  "devDependencies": {
+    "@semantic-release/commit-analyzer": "^13.0.1",
+    "@semantic-release/github": "^12.0.6",
+    "@semantic-release/npm": "^13.1.5",
+    "@semantic-release/release-notes-generator": "^14.1.0",
+    "semantic-release": "^25.0.3"
+  }
 }
