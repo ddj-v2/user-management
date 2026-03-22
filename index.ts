@@ -100,11 +100,11 @@ class UserManageDetailHandler extends UserManageHandler {
         if (!udoc) throw new UserNotFoundError(uid);
         
         if (operation === 'edit') {
-            await this.postEdit(domainId, uid);
+            await this.postEdit(domainId, uid, this.args.mail, this.args.uname, this.args.bio);
         } else if (operation === 'resetPassword') {
-            await this.postResetPassword(domainId, uid);
+            await this.postResetPassword(domainId, uid, this.args.password);
         } else if (operation === 'setPriv') {
-            await this.postSetPriv(domainId, uid);
+            await this.postSetPriv(domainId, uid, this.args.priv);
         } else if (operation === 'ban') {
             await this.postBan(domainId, uid);
         } else if (operation === 'unban') {
@@ -117,9 +117,8 @@ class UserManageDetailHandler extends UserManageHandler {
     @param('uid', Types.Int)
     @param('mail', Types.Email, true)
     @param('uname', Types.Username, true)
-    @param('school', Types.String, true)
     @param('bio', Types.Content, true)
-    async postEdit(domainId: string, uid: number, mail?: string, uname?: string, school?: string, bio?: string) {
+    async postEdit(domainId: string, uid: number, mail?: string, uname?: string, bio?: string) {
         const udoc = await UserModel.getById(domainId, uid);
         if (!udoc) throw new UserNotFoundError(uid);
         
@@ -142,7 +141,6 @@ class UserManageDetailHandler extends UserManageHandler {
         }
         
         const updates: any = {};
-        if (school !== undefined) updates.school = school;
         if (bio !== undefined) updates.bio = bio;
         
         if (Object.keys(updates).length > 0) {
