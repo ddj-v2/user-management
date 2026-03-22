@@ -281,6 +281,13 @@ export async function apply(ctx: Context) {
         };
         return DomainUserHandler;
     });
+    ctx.withHandlerClass('SwitchAccount', (SwitchAccountHandler : { prototype: any }) => {
+        SwitchAccountHandler.prototype.get = SwitchAccountHandler.prototype.post = async function() {
+            throw new PermissionError(`SwitchAccountHandler get called, but it should be overridden by user management plugin. 
+                If you really need this feature, please contact the administrator to enable the user management plugin.`);
+        };
+        return SwitchAccountHandler;
+    });
     // 添加国际化支持
     ctx.i18n.load('zh', {
         'user_manage_main': '用户管理',
