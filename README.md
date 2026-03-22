@@ -67,14 +67,6 @@ pm2 restart hydrooj
 
 MIT License
 
-## 支援
-
-若您在使用過程中遇到問題，請：
-
-1. 查看 [Issues](https://github.com/SummerofOrange/hydrooj-user-management/issues) 頁面
-2. 提交新的 Issue 描述您的問題
-3. 聯絡作者取得技術支援
-
 ---
 
 **注意**：此插件需 HydroOJ v5.0.0-beta.6 或更高版本。使用前請確保您有足夠的系統管理權限。
